@@ -1,12 +1,34 @@
+from logging import raiseExceptions
 import chevron
 from pathlib import Path
 import http.server
 import socketserver
 from functools import partial
 
-def render_template(filename, data):
-    '''Render a template with given data. return rendered template. No error checking'''
+class TokenMismatchError(Exception):
+    pass
+
+def check_tokens(filename, data):
+    '''Check that the data has the keys in the filename'''
     template_path = Path("templates/")
+    
+    #Extract tokens
+    with open(template_path / filename, 'r') as f:
+        ft = f.read()
+        tokens_tuple = chevron.tokenizer.tokenize(ft)
+        tokens = [v[1] for v in tokens_tuple if v[0] == 'variable'] #Extract variable names
+    
+    #Check tokens == keys
+    if set(data.keys()) != set(tokens):
+        raise TokenMismatchError(f"Tokens do not match!\n\
+        Data keys: {str(list(data.keys()))}, \n\
+        Template variables: {str(tokens)}")
+
+def render_template(filename, data):
+    '''Render a template with given data. return rendered template.'''
+    template_path = Path("templates/")
+    check_tokens(filename, data) #Check tokens
+
     with open(template_path / filename, 'r') as f:
         temp_render = chevron.render(f, data)
 
