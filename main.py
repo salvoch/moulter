@@ -4,6 +4,7 @@ from pathlib import Path
 import http.server
 import socketserver
 from functools import partial
+import marko
 
 class TokenMismatchError(Exception):
     pass
@@ -16,7 +17,9 @@ def check_tokens(filename, data):
     with open(template_path / filename, 'r') as f:
         ft = f.read()
         tokens_tuple = chevron.tokenizer.tokenize(ft)
-        tokens = [v[1] for v in tokens_tuple if v[0] == 'variable'] #Extract variable names
+        tokens = [v[1] for v in tokens_tuple if (v[0] == 'variable') or (v[0] == 'no escape')] #Extract variable names
+        #for token in tokens_tuple:
+        #    print(token)
     
     #Check tokens == keys
     if set(data.keys()) != set(tokens):
@@ -48,10 +51,41 @@ def host_site_test(sitename, path="site", PORT = 8080):
         print(f"serving at: http://localhost:{str(PORT)}/{sitename}")
         httpd.serve_forever()
 
+def render_markdown(filename):
+    '''Read markdown, render, return html body'''
+
+    openpath = Path(filename)
+    with open(openpath, 'r') as f:
+        md = f.read()
+
+    html = marko.convert(md)
+    #TODO -- validate data, error checking
+    return html
+
+def html_parse_test():
+    '''Use Marko to convert md to html, quick test'''
+
+    openpath = Path("tests/test.md")
+    with open(openpath, 'r') as f:
+        md = f.read()
+
+    html = marko.convert(md)
+
+    savepath = Path("tests/output_test.html")
+    with open(savepath, 'w') as f:
+        f.write(html)
+
 if __name__ == '__main__':
     #quick test
+    '''
     testdata = {'title': 'shi-title', 'header-one': 'shi-header', 'body': 'shi-boddy'}
     render = render_template('test1.html', testdata)
     save_render('shi.html', render)
     host_site_test('shi.html')
+    '''
+    bod = render_markdown('tests/test.md')
+    testdata = {'title': 'test1', 'pagebody': bod}
+    render = render_template('test2.html', testdata)
+    save_render('shi2.html', render)
+    host_site_test('shi2.html')
 
