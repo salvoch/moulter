@@ -1,0 +1,22 @@
+Structure
+    put a post in a directory, run again, don't list each post
+    - you have to have an indicator for template
+    - indicator for which directory to point to
+    - show how many posts... [5]
+    - Index? Archives?
+
+Don't forget archive sections, how do we define those?
+
+- chose yaml or json
+- Figure out how to create dynamic number of elements on a page with mustache template
+        --- https://mustache.github.io/mustache.5.html
+            --- Sections or non-empty lists???
+- css/looks/default templates
+- can we do syntax highlighting in html
+
+1. default dict
+    - solidify structure
+    - chose yaml/json
+    - prettyprint structure (graphviz)
+2. functions that take dicts -> return new dicts
+3. gensite(dictionary)
