@@ -20,3 +20,16 @@ Don't forget archive sections, how do we define those?
     - prettyprint structure (graphviz)
 2. functions that take dicts -> return new dicts
 3. gensite(dictionary)
+
+example json:
+{"Name": "Salvoch", 
+    "Categories":
+        [{"catname": "Python",
+           "postsnum": 5,
+           "template": "pythonposts.html",
+           "directory": "python/"},
+        {"catname": "AWS"},
+        {"catname": "Naked Pics"}
+    ],
+    "default-archive-template": "archive-template2.html",
+    "default-index-template": "some.html"}
